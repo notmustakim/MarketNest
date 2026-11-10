@@ -12,11 +12,7 @@ This package implements the multi-vendor marketplace database designed in the su
 - `app/` contains a presentation-ready operations dashboard for create, search, update, guarded delete, checkout, shipment, returns, reviews, payments, payouts, and reporting workflows.
 - `diagrams/` contains the conceptual ER and relational EER diagrams from the submitted MarketNest assignment.
 - `tests/` contains 34 documented tests, a MySQL test runner, and the latest recorded test results.
-- `report/MarketNest_Final_Report.pdf` is the final written report, authored in LaTeX. The editable `report/MarketNest_Final_Report.tex`, its dashboard screenshots, and the referenced diagrams are included.
-
-## Report source
-
-The archive includes the compiled PDF and editable LaTeX source. The source uses the RUET logo in `report/assets/ruet_logo.png`, dashboard images in `report/screenshots/`, and diagrams in `diagrams/`; keep those paths in place if you recompile. From the `report` folder, run `pdflatex MarketNest_Final_Report.tex` twice to refresh the contents and figure/table lists. A TeX distribution with the packages named in the preamble is required. The included PDF is the completed report.
+- `report/MarketNest_Final_Report.pdf` is the final written report.
 
 ## Setup in MySQL Workbench
 
