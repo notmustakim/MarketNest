@@ -1,0 +1,1 @@
+Database validation completed 2026-11-10 against a fresh, isolated MySQL Server 8.0.46 database. SQL files 01 through 05 executed in order. All 34 documented test cases passed. The test runner and observed results are included in this folder.

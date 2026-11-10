@@ -1,0 +1,35 @@
+Test ID,Description,Expected Result,Actual Result,Status
+TC01,All 18 tables have at least 10 sample rows,18 tables; minimum count >= 10,MySQL runner output,Not run
+TC02,Negative stock quantity is invalid,CHECK constraint rejects update,MySQL runner output,Not run
+TC03,Duplicate customer email is invalid,UNIQUE constraint rejects insert,MySQL runner output,Not run
+TC04,Missing cart foreign key is invalid,Foreign key rejects insert,MySQL runner output,Not run
+TC05,Missing seller foreign key is invalid,Foreign key rejects insert,MySQL runner output,Not run
+TC06,Order address must belong to the order customer,Composite foreign key rejects insert,MySQL runner output,Not run
+TC07,Duplicate SKU is invalid,UNIQUE constraint rejects insert,MySQL runner output,Not run
+TC08,Percent coupon above 100 is invalid,CHECK constraint rejects insert,MySQL runner output,Not run
+TC09,Order total must match subtotal-discount+shipping,CHECK constraint rejects insert,MySQL runner output,Not run
+TC10,Rating must be between 1 and 5,CHECK constraint rejects insert,MySQL runner output,Not run
+TC11,Review requires a delivered order item,Trigger rejects insert,MySQL runner output,Not run
+TC12,Shipment tracking number must be unique,UNIQUE constraint rejects insert,MySQL runner output,Not run
+TC13,Valid order line reserves stock,Procedure inserts line and decreases stock,MySQL runner output,Not run
+TC14,Insufficient stock is rejected,Procedure rejects oversell,MySQL runner output,Not run
+TC15,Three reporting views exist,All 3 views listed in information_schema,MySQL runner output,Not run
+TC16,Required stored programs exist,3 procedures and 13 triggers installed,MySQL runner output,Not run
+TC17,Seller payout procedure works,Returns a payout ID; test transaction rolls back,MySQL runner output,Not run
+TC18,Failed transaction restores data,Stock value equals original after rollback,MySQL runner output,Not run
+TC19,Payment reference must be unique,UNIQUE constraint rejects insert,MySQL runner output,Not run
+TC20,Invalid user credentials are rejected,MySQL denies the deliberately invalid login,MySQL runner output,Not run
+TC21,Return quantity cannot exceed purchased units,Trigger rejects excess quantity,MySQL runner output,Not run
+TC22,Return request after seven days is invalid,Trigger rejects an expired request,MySQL runner output,Not run
+TC23,Cart quantity must be positive,CHECK constraint rejects quantity zero,MySQL runner output,Not run
+TC24,Catalog query returns useful data,At least one available variant is returned,MySQL runner output,Not run
+TC25,Payout dates cannot overlap on update,Trigger rejects overlap with another seller payout,MySQL runner output,Not run
+TC26,Return units stay within purchased quantity on update,Trigger rejects excessive return units,MySQL runner output,Not run
+TC27,Coupon discount must follow its definition,Trigger rejects an incorrect coupon discount,MySQL runner output,Not run
+TC28,Category cannot be its own parent,Trigger rejects a category whose parent is itself,MySQL runner output,Not run
+TC29,Cancellation updates order and restores stock,"Procedure cancels an unshipped order, marks payment failed, and restores inventory",MySQL runner output,Not run
+TC30,Invalid order status transitions are rejected,Trigger blocks a Delivered-to-Pending transition,MySQL runner output,Not run
+TC31,Overlapping payout periods are rejected on insert,Insert trigger rejects an overlapping payout date range,MySQL runner output,Not run
+TC32,Category cannot be made its own parent by update,Update trigger rejects self-parenting,MySQL runner output,Not run
+TC33,Refunding an approved return restores stock,Refund transition trigger restores returned inventory,MySQL runner output,Not run
+TC34,Return status transitions are enforced,Trigger rejects Rejected-to-Approved transition,MySQL runner output,Not run

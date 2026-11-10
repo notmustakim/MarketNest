@@ -1,0 +1,35 @@
+Test ID,Description,Actual Result,Status
+TC01,All 18 relations have at least 10 sample rows,18 relations checked; minimum row count is 10,PASS
+TC02,Negative inventory is rejected by a CHECK constraint,Database rejected invalid input (error 3819),PASS
+TC03,Duplicate customer email is rejected,Database rejected invalid input (error 1062),PASS
+TC04,Invalid cart foreign key is rejected,Database rejected invalid input (error 1452),PASS
+TC05,Invalid product seller foreign key is rejected,Database rejected invalid input (error 1452),PASS
+TC06,Order cannot reference another or missing address,Database rejected invalid input (error 1452),PASS
+TC07,Duplicate product-variant SKU is rejected,Database rejected invalid input (error 1062),PASS
+TC08,Percent coupon above 100 is rejected,Database rejected invalid input (error 3819),PASS
+TC09,Incorrect order total is rejected,Database rejected invalid input (error 3819),PASS
+TC10,Rating outside the 1-5 boundary is rejected,Database rejected invalid input (error 3819),PASS
+TC11,Review on a non-delivered order is rejected,Database rejected invalid input (error 1644),PASS
+TC12,Duplicate shipment tracking number is rejected,Database rejected invalid input (error 1062),PASS
+TC13,Valid order line reserves stock,Stock decreased by one for an inserted order line; transaction rolled back,PASS
+TC14,Order-line reservation procedure prevents overselling,Database rejected invalid input (error 1644),PASS
+TC15,Three reporting views are installed,All three reporting views are present,PASS
+TC16,Required procedures and triggers are installed,Found 3 required procedures and 13 triggers,PASS
+TC17,Seller payout procedure returns a payout ID,Payout procedure created a result inside a rolled-back test transaction,PASS
+TC18,Transaction rollback preserves original inventory,Constraint failure was rolled back; original stock remained unchanged,PASS
+TC19,Duplicate payment transaction reference is rejected,Database rejected invalid input (error 1062),PASS
+TC20,Invalid database credentials are rejected,Database rejected the deliberately invalid account (error 1045),PASS
+TC21,Return quantity cannot exceed purchased units,Database rejected invalid input (error 1644),PASS
+TC22,Return after seven-day window is rejected,Database rejected invalid input (error 1644),PASS
+TC23,Zero cart quantity is rejected at the boundary,Database rejected invalid input (error 3819),PASS
+TC24,Catalog report query returns available variants,Catalog query returned 33 available variants,PASS
+TC25,Overlapping payout periods are rejected on update,Update trigger rejected overlapping payout dates (error 1644),PASS
+TC26,Return quantity remains bounded after update,Database rejected invalid input (error 1644),PASS
+TC27,Coupon discount must match coupon rule,Database rejected invalid input (error 1644),PASS
+TC28,Category cannot be its own parent,Database rejected invalid input (error 1644),PASS
+TC29,Cancellation restores order stock and updates payment,Cancellation procedure updated order/payment and restored reserved stock,PASS
+TC30,Invalid order status transitions are rejected,Database rejected invalid input (error 1644),PASS
+TC31,Overlapping payout periods are rejected on insert,Database rejected invalid input (error 1644),PASS
+TC32,Category cannot be made its own parent by update,Database rejected invalid input (error 1644),PASS
+TC33,Refunding an approved return restores stock,Refund transition restored returned units to inventory; transaction rolled back,PASS
+TC34,Return status transitions are enforced,Database rejected invalid input (error 1644),PASS
