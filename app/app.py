@@ -600,16 +600,26 @@ with tab_checkout:
             coupon_labels=["No coupon"]+[f"{r.code} · {r.discount_type} {r.discount_value}" for r in coupons.itertuples()]
             coupon_map={f"{r.code} · {r.discount_type} {r.discount_value}":r for r in coupons.itertuples()}
             al,am=options(addresses,lambda r:f"{r.label}: {r.street_line}, {r.city} (#{r.address_no})",lambda r:int(r.address_no))
-            with st.form("checkout_form"):
-                c1,c2=st.columns(2); address=c1.selectbox("Delivery address",al); coupon_label=c2.selectbox("Coupon",coupon_labels)
-                method=st.selectbox("Payment method",["Cash on Delivery","Card","Wallet","Bank Transfer"])
-                confirm=st.checkbox("Confirm this order and reserve stock"); submit=st.form_submit_button("Place order")
-            coupon_id=None; discount=Decimal("0.00")
+            if st.session_state.get("checkout_address") not in al: st.session_state["checkout_address"]=al[0]
+            if st.session_state.get("checkout_coupon") not in coupon_labels: st.session_state["checkout_coupon"]="No coupon"
+            c1,c2=st.columns(2)
+            address=c1.selectbox("Delivery address",al,key="checkout_address")
+            coupon_label=c2.selectbox("Coupon",coupon_labels,key="checkout_coupon")
+            coupon_id=None; coupon=None; discount=Decimal("0.00")
             if coupon_label!="No coupon":
                 coupon=coupon_map[coupon_label]; coupon_id=int(coupon.coupon_id); value=Decimal(str(coupon.discount_value))
                 discount=(subtotal*value/Decimal(100)).quantize(Decimal("0.01"),rounding=ROUND_HALF_UP) if coupon.discount_type=="Percent" else min(value,subtotal)
             shipping=Decimal("80.00"); total=subtotal-discount+shipping
-            st.write(f"Subtotal **৳{subtotal:,.2f}** · Discount **৳{discount:,.2f}** · Shipping **৳{shipping:,.2f}** · Total **৳{total:,.2f}**")
+            price=st.columns(4)
+            price[0].metric("Subtotal",f"৳{subtotal:,.2f}")
+            price[1].metric("Coupon discount",f"−৳{discount:,.2f}")
+            price[2].metric("Shipping",f"৳{shipping:,.2f}")
+            price[3].metric("Total due",f"৳{total:,.2f}")
+            if coupon is not None:
+                st.caption(f"{coupon.code} applied. You save ৳{discount:,.2f} on this order.")
+            with st.form("checkout_form"):
+                method=st.selectbox("Payment method",["Cash on Delivery","Card","Wallet","Bank Transfer"])
+                confirm=st.checkbox("Confirm this order and reserve stock"); submit=st.form_submit_button("Place order")
             if any(int(r.quantity)>int(r.stock_qty) for r in cart.itertuples()): st.warning("Cart quantity exceeds current stock; update cart or inventory first.")
             if submit:
                 if not confirm: st.warning("Confirm the order before placing it.")

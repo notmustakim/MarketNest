@@ -1,35 +1,35 @@
-Test ID,Description,Expected Result,Actual Result,Status
-TC01,All 18 tables have at least 10 sample rows,18 tables; minimum count >= 10,MySQL runner output,Not run
-TC02,Negative stock quantity is invalid,CHECK constraint rejects update,MySQL runner output,Not run
-TC03,Duplicate customer email is invalid,UNIQUE constraint rejects insert,MySQL runner output,Not run
-TC04,Missing cart foreign key is invalid,Foreign key rejects insert,MySQL runner output,Not run
-TC05,Missing seller foreign key is invalid,Foreign key rejects insert,MySQL runner output,Not run
-TC06,Order address must belong to the order customer,Composite foreign key rejects insert,MySQL runner output,Not run
-TC07,Duplicate SKU is invalid,UNIQUE constraint rejects insert,MySQL runner output,Not run
-TC08,Percent coupon above 100 is invalid,CHECK constraint rejects insert,MySQL runner output,Not run
-TC09,Order total must match subtotal-discount+shipping,CHECK constraint rejects insert,MySQL runner output,Not run
-TC10,Rating must be between 1 and 5,CHECK constraint rejects insert,MySQL runner output,Not run
-TC11,Review requires a delivered order item,Trigger rejects insert,MySQL runner output,Not run
-TC12,Shipment tracking number must be unique,UNIQUE constraint rejects insert,MySQL runner output,Not run
-TC13,Valid order line reserves stock,Procedure inserts line and decreases stock,MySQL runner output,Not run
-TC14,Insufficient stock is rejected,Procedure rejects oversell,MySQL runner output,Not run
-TC15,Three reporting views exist,All 3 views listed in information_schema,MySQL runner output,Not run
-TC16,Required stored programs exist,3 procedures and 13 triggers installed,MySQL runner output,Not run
-TC17,Seller payout procedure works,Returns a payout ID; test transaction rolls back,MySQL runner output,Not run
-TC18,Failed transaction restores data,Stock value equals original after rollback,MySQL runner output,Not run
-TC19,Payment reference must be unique,UNIQUE constraint rejects insert,MySQL runner output,Not run
-TC20,Invalid user credentials are rejected,MySQL denies the deliberately invalid login,MySQL runner output,Not run
-TC21,Return quantity cannot exceed purchased units,Trigger rejects excess quantity,MySQL runner output,Not run
-TC22,Return request after seven days is invalid,Trigger rejects an expired request,MySQL runner output,Not run
-TC23,Cart quantity must be positive,CHECK constraint rejects quantity zero,MySQL runner output,Not run
-TC24,Catalog query returns useful data,At least one available variant is returned,MySQL runner output,Not run
-TC25,Payout dates cannot overlap on update,Trigger rejects overlap with another seller payout,MySQL runner output,Not run
-TC26,Return units stay within purchased quantity on update,Trigger rejects excessive return units,MySQL runner output,Not run
-TC27,Coupon discount must follow its definition,Trigger rejects an incorrect coupon discount,MySQL runner output,Not run
-TC28,Category cannot be its own parent,Trigger rejects a category whose parent is itself,MySQL runner output,Not run
-TC29,Cancellation updates order and restores stock,"Procedure cancels an unshipped order, marks payment failed, and restores inventory",MySQL runner output,Not run
-TC30,Invalid order status transitions are rejected,Trigger blocks a Delivered-to-Pending transition,MySQL runner output,Not run
-TC31,Overlapping payout periods are rejected on insert,Insert trigger rejects an overlapping payout date range,MySQL runner output,Not run
-TC32,Category cannot be made its own parent by update,Update trigger rejects self-parenting,MySQL runner output,Not run
-TC33,Refunding an approved return restores stock,Refund transition trigger restores returned inventory,MySQL runner output,Not run
-TC34,Return status transitions are enforced,Trigger rejects Rejected-to-Approved transition,MySQL runner output,Not run
+Test ID,Description,Input / Action,Expected Result,Actual Result,Status
+TC01,All 18 tables have at least 10 sample rows,Count all base tables and rows in the seeded database.,18 tables; minimum count >= 10,18 relations checked; minimum row count is 10,PASS
+TC02,Negative stock quantity is invalid,"Set stock_qty to -1 for product 1, variant 1.",CHECK constraint rejects update,Database rejected invalid input (error 3819),PASS
+TC03,Duplicate customer email is invalid,Insert a customer using the existing customer01@example.test email.,UNIQUE constraint rejects insert,Database rejected invalid input (error 1062),PASS
+TC04,Missing cart foreign key is invalid,Insert a cart item with nonexistent cart_id 999999.,Foreign key rejects insert,Database rejected invalid input (error 1452),PASS
+TC05,Missing seller foreign key is invalid,Insert a product with nonexistent seller_id 999999.,Foreign key rejects insert,Database rejected invalid input (error 1452),PASS
+TC06,Order address must belong to the order customer,Insert an order for customer 1 with missing address_no 999.,Composite foreign key rejects insert,Database rejected invalid input (error 1452),PASS
+TC07,Duplicate SKU is invalid,Insert a product variant using the existing SKU MN-001-01.,UNIQUE constraint rejects insert,Database rejected invalid input (error 1062),PASS
+TC08,Percent coupon above 100 is invalid,Insert a Percent coupon with discount_value 150.,CHECK constraint rejects insert,Database rejected invalid input (error 3819),PASS
+TC09,Order total must match subtotal-discount+shipping,"Insert an order with subtotal 100, shipping 50, and inconsistent total 120.",CHECK constraint rejects insert,Database rejected invalid input (error 3819),PASS
+TC10,Rating must be between 1 and 5,Insert a review with rating 6 (allowed range is 1 to 5).,CHECK constraint rejects insert,Database rejected invalid input (error 3819),PASS
+TC11,Review requires a delivered order item,"Insert a review for a non-delivered order item (order 15, line 1).",Trigger rejects insert,Database rejected invalid input (error 1644),PASS
+TC12,Shipment tracking number must be unique,Insert a shipment using the existing tracking number TRK-0001.,UNIQUE constraint rejects insert,Database rejected invalid input (error 1062),PASS
+TC13,Valid order line reserves stock,"Reserve one in-stock variant, check stock decreased by one, then roll back.",Procedure inserts line and decreases stock,Stock decreased by one for an inserted order line; transaction rolled back,PASS
+TC14,Insufficient stock is rejected,Call the reserve procedure with invalid product/variant and quantity 999999.,Procedure rejects oversell,Database rejected invalid input (error 1644),PASS
+TC15,Three reporting views exist,Check information_schema for the three required reporting views.,All 3 views listed in information_schema,All three reporting views are present,PASS
+TC16,Required stored programs exist,Check information_schema for three procedures and at least 13 triggers.,3 procedures and 13 triggers installed,Found 3 required procedures and 13 triggers,PASS
+TC17,Seller payout procedure works,Call seller payout for seller 1 and 2025 dates; roll back the test.,Returns a payout ID; test transaction rolls back,Payout procedure created a result inside a rolled-back test transaction,PASS
+TC18,Failed transaction restores data,"Change stock, cause a CHECK failure, and verify rollback restores stock.",Stock value equals original after rollback,Constraint failure was rolled back; original stock remained unchanged,PASS
+TC19,Payment reference must be unique,Insert a payment with the existing transaction reference PAY-MN-0001.,UNIQUE constraint rejects insert,Database rejected invalid input (error 1062),PASS
+TC20,Invalid user credentials are rejected,Connect using a deliberately invalid MySQL username and password.,MySQL denies the deliberately invalid login,Database rejected the deliberately invalid account (error 1045),PASS
+TC21,Return quantity cannot exceed purchased units,"Request one more return unit than purchased for order 12, line 1.",Trigger rejects excess quantity,Database rejected invalid input (error 1644),PASS
+TC22,Return request after seven days is invalid,Request a return eight days after delivery for order 12.,Trigger rejects an expired request,Database rejected invalid input (error 1644),PASS
+TC23,Cart quantity must be positive,Insert a cart item with quantity zero.,CHECK constraint rejects quantity zero,Database rejected invalid input (error 3819),PASS
+TC24,Catalog query returns useful data,Query the catalogue view for variants with available stock.,At least one available variant is returned,Catalog query returned 33 available variants,PASS
+TC25,Payout dates cannot overlap on update,Update seller 1 payout dates into an overlapping period.,Trigger rejects overlap with another seller payout,Update trigger rejected overlapping payout dates (error 1644),PASS
+TC26,Return units stay within purchased quantity on update,"Update return request 1 quantity to 4, above its purchased quantity.",Trigger rejects excessive return units,Database rejected invalid input (error 1644),PASS
+TC27,Coupon discount must follow its definition,Insert an order with coupon 1 but an incorrect zero discount.,Trigger rejects an incorrect coupon discount,Database rejected invalid input (error 1644),PASS
+TC28,Category cannot be its own parent,Insert a category whose parent_category_id is its own ID.,Trigger rejects a category whose parent is itself,Database rejected invalid input (error 1644),PASS
+TC29,Cancellation updates order and restores stock,"Reserve stock and cancel an unshipped order; verify order, payment, and stock, then clean up.","Procedure cancels an unshipped order, marks payment failed, and restores inventory",Cancellation procedure updated order/payment and restored reserved stock,PASS
+TC30,Invalid order status transitions are rejected,Change order 1 from Delivered to Pending.,Trigger blocks a Delivered-to-Pending transition,Database rejected invalid input (error 1644),PASS
+TC31,Overlapping payout periods are rejected on insert,Insert a seller 1 payout for June 2026 overlapping an existing payout.,Insert trigger rejects an overlapping payout date range,Database rejected invalid input (error 1644),PASS
+TC32,Category cannot be made its own parent by update,Update category 1 to use itself as its parent.,Update trigger rejects self-parenting,Database rejected invalid input (error 1644),PASS
+TC33,Refunding an approved return restores stock,"Refund approved return 4; verify inventory restoration, then roll back.",Refund transition trigger restores returned inventory,Refund transition restored returned units to inventory; transaction rolled back,PASS
+TC34,Return status transitions are enforced,Change rejected return 7 to Approved.,Trigger rejects Rejected-to-Approved transition,Database rejected invalid input (error 1644),PASS

@@ -12,7 +12,11 @@ This package implements the multi-vendor marketplace database designed in the su
 - `app/` contains a presentation-ready operations dashboard for create, search, update, guarded delete, checkout, shipment, returns, reviews, payments, payouts, and reporting workflows.
 - `diagrams/` contains the conceptual ER and relational EER diagrams from the submitted MarketNest assignment.
 - `tests/` contains 34 documented tests, a MySQL test runner, and the latest recorded test results.
-- `report/MarketNest_Final_Report.pdf` is the final written report.
+- `report/MarketNest_Final_Report.pdf` is the final written report, authored in LaTeX. The editable `report/MarketNest_Final_Report.tex`, its dashboard screenshots, and the referenced diagrams are included.
+
+## Report source
+
+The archive includes the compiled PDF and editable LaTeX source. The source uses the RUET logo in `report/assets/ruet_logo.png`, dashboard images in `report/screenshots/`, and diagrams in `diagrams/`; keep those paths in place if you recompile. From the `report` folder, run `pdflatex MarketNest_Final_Report.tex` twice to refresh the contents and figure/table lists. A TeX distribution with the packages named in the preamble is required. The included PDF is the completed report.
 
 ## Setup in MySQL Workbench
 
@@ -21,7 +25,7 @@ This package implements the multi-vendor marketplace database designed in the su
 3. Run `sql/02_seed_data.sql` to load sample records.
 4. Run `sql/03_database_features.sql` to install the views, triggers, and procedures.
 5. Run `sql/04_queries.sql` to review and execute the query set.
-6. Run `python tests/run_tests.py` after installing the project requirements. Replace `tests/test_results.csv` with the observed results from your own MySQL server before submission.
+6. Run `python tests/run_tests.py` after installing the project requirements to reproduce the database checks. The included `tests/test_results.csv` contains the latest observed results: all 34 test cases passed.
 
 The test runner is a command-line script. Run it with Python; do not launch it with `streamlit run`.
 
@@ -48,11 +52,11 @@ streamlit run app/app.py --server.address 127.0.0.1
 
 If an older dashboard is already running, stop that process with `Ctrl+C` and start this command again to load the updated interface. Customers use the schema's Active/Suspended status; there is no identity-verification feature.
 
-The dashboard saves changes to MySQL and provides a manual `Refresh data` button to reload tables. Deletes are blocked when they would remove referenced order, shipment, or payout history; use Hidden or Suspended status to retire linked records. The interface does not authenticate users or store card details, and payment outcomes are recorded locally without an external gateway. Checkout reserves stock and creates order lines inside one application-managed transaction.
+The dashboard saves changes to MySQL and provides a manual `Refresh data` button to reload tables. Checkout recalculates the discount and total as soon as a coupon is selected, before the order is placed. Deletes are blocked when they would remove referenced order, shipment, or payout history; use Hidden or Suspended status to retire linked records. The interface does not authenticate users or store card details, and payment outcomes are recorded locally without an external gateway. Checkout reserves stock and creates order lines inside one application-managed transaction.
 
 ## Tests and result recording
 
-The test plan covers row counts, CHECK constraints, unique values, foreign keys, stock reservation and restoration, review eligibility, the return lifecycle, order status transitions, report objects, payout generation, transaction rollback, and rejected credentials. The runner requires a live MySQL instance and writes observed outcomes to `tests/test_results.csv`; run it on your own installation and include the results before submission. `test_cases.csv` lists the test descriptions and expected outcomes.
+The test plan covers row counts, CHECK constraints, unique values, foreign keys, stock reservation and restoration, review eligibility, the return lifecycle, order status transitions, report objects, payout generation, transaction rollback, and rejected credentials. The runner requires a live MySQL instance and writes new observed outcomes to `tests/test_results.csv`. `test_cases.csv` includes each test description, input/action, expected result, observed result, and status; `test_results.csv` is the latest execution record.
 
 ## Design notes
 
